@@ -36,4 +36,3 @@ class Film(db.Model):
             'length': self.length,
             'rating': self.rating
         }
-

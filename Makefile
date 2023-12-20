@@ -1,6 +1,4 @@
 # Makefile
-PORT ?= 8000
-
 install:
 	poetry install
 dev:

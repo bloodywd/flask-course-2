@@ -12,17 +12,18 @@ class Smoke(Resource):
 
 
 class FilmListApi(Resource):
-    def get(self, uuid=None):
+    @staticmethod
+    def get(uuid=None):
         if not uuid:
             films = db.session.query(Film).all()
-            print(films)
             return [f.to_dict() for f in films], 200
         film = db.session.query(Film).filter_by(uuid=uuid).first()
         if film:
             return film.to_dict(), 200
         return film, 404
 
-    def post(self):
+    @staticmethod
+    def post():
         film_json = request.json
         if not film_json:
             return {'message': 'Wrong data'}, 400
@@ -42,7 +43,8 @@ class FilmListApi(Resource):
             return {'message': 'Wrong data'}, 400
         return {'message': 'Created successfully'}, 201
 
-    def put(self, uuid):
+    @staticmethod
+    def put(uuid):
         film_json = request.json
         if not film_json:
             return {'message': 'Wrong data'}, 400
@@ -63,7 +65,8 @@ class FilmListApi(Resource):
             return {'message': 'Wrong data'}, 400
         return {'message': 'Updated successfully'}, 200
 
-    def patch(self, uuid):
+    @staticmethod
+    def patch(uuid):
         film = db.session.query(Film).filter_by(uuid=uuid).first()
         print(film)
         if not film:
@@ -76,7 +79,6 @@ class FilmListApi(Resource):
         description = film_json.get('description')
         length = film_json.get('length')
         rating = film_json.get('rating')
-        print(film)
         if title:
             film.title = title
         elif release_date:
@@ -92,7 +94,8 @@ class FilmListApi(Resource):
         db.session.add(film)
         db.session.commit()
 
-    def delete(self, uuid):
+    @staticmethod
+    def delete(uuid):
         film = db.session.query(Film).filter_by(uuid=uuid).first()
         if not film:
             return film, 404
