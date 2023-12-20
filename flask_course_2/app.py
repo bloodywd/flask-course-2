@@ -1,5 +1,5 @@
 from config import Config
-from flask import Flask
+from flask import Flask, render_template, request
 from flask_migrate import Migrate
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
@@ -23,3 +23,16 @@ SWAGGER_BLUEPRINT = get_swaggerui_blueprint(
 )
 
 app.register_blueprint(SWAGGER_BLUEPRINT, url_prefix=SWAGGER_URL)
+
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    return render_template('index.html')
+
+
+@app.route('/greeting', methods=['POST'])
+def greeting():
+    name = request.form.get('name')
+    if not name:
+        return 'Please, enter you name', 400
+    return render_template('greeting.html', name=name)

@@ -1,5 +1,5 @@
 from .app import app, db, api
-from . import models
+from .database import models
 from . import routes
 
 __all__ = {
