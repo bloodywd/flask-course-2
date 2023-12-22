@@ -2,6 +2,13 @@ import uuid
 from flask_course_2 import db
 
 
+movies_actors = db.Table(
+    'movies_actors',
+    db.Column('actor_id', db.Integer, db.ForeignKey('actors.id'), primary_key=True),
+    db.Column('film_id', db.Integer, db.ForeignKey('films.id'), primary_key=True),
+)
+
+
 class Film(db.Model):
     __tablename__ = 'films'
 
@@ -13,8 +20,9 @@ class Film(db.Model):
     distributed_by = db.Column(db.String(120), nullable=False)
     length = db.Column(db.Float)
     rating = db.Column(db.Float)
+    actors = db.relationship('Actor', secondary=movies_actors, lazy='subquery', backref=db.backref('films', lazy=True))
 
-    def __init__(self, title, release_date, description, distributed_by, length, rating):
+    def __init__(self, title, release_date, description, distributed_by, length, rating, actors=None):
         self.title = title
         self.release_date = release_date
         self.description = description
@@ -22,20 +30,13 @@ class Film(db.Model):
         self.length = length
         self.rating = rating
         self.uuid = str(uuid.uuid4())
+        if not actors:
+            self.actors = []
+        else:
+            self.actors = actors
 
     def __repr__(self):
-        return f'Film({self.title}, {self.uuid}, {self.distributed_by}, {self.release_date})'
-
-    def to_dict(self):
-        return {
-            'title': self.title,
-            'uuid': self.uuid,
-            'release_date': self.release_date.strftime('%Y-%m-%d'),
-            'description': self.description,
-            'distributed_by': self.distributed_by,
-            'length': self.length,
-            'rating': self.rating
-        }
+        return f'Film({self.title}, {self.uuid}, {self.distributed_by}, {self.release_date}, {self.rating}, {self.actors})'
 
 
 class Actor(db.Model):
